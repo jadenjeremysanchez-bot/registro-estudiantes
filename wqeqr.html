@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Registro de Estudiantes</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .contenedor {
+            width: 95%;
+            max-width: 1100px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .contenido {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .marco {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .marco h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .guardar {
+            background-color: green;
+        }
+
+        .mostrar {
+            background-color: blue;
+        }
+
+        .eliminar {
+            background-color: red;
+        }
+
+        .limpiar {
+            background-color: gray;
+        }
+
+        .buscar {
+            background-color: orange;
+            color: black;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e8e8e8;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background-color: #eeeeee;
+        }
+
+        .seleccionado {
+            background-color: #cfe2ff !important;
+        }
+
+        .buscar-contenedor {
+            margin-top: 20px;
+        }
+
+        .buscar-fila {
+            display: flex;
+            gap: 10px;
+        }
+
+        .buscar-fila input {
+            flex: 1;
+        }
+
+        .mensaje {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffe69c;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 750px) {
+
+            .contenido {
+                grid-template-columns: 1fr;
+            }
+
+            .buscar-fila {
+                flex-direction: column;
+            }
+
+            .buscar {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Sistema de Registro de Estudiantes</h1>
+
+        <div id="mensaje" class="mensaje"></div>
+
+        <div class="contenido">
+
+            <!-- DATOS DEL ESTUDIANTE -->
+
+            <div class="marco">
+
+                <h2>Datos del estudiante</h2>
+
+                <label for="nombre">Nombre:</label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                >
+
+                <label for="edad">Edad:</label>
+
+                <input
+                    type="number"
+                    id="edad"
+                    min="1"
+                >
+
+                <label for="curso">Curso:</label>
+
+                <select id="curso">
+
+                    <option value="">
+                        Selecciona un curso
+                    </option>
+
+                    <option value="Matemáticas">
+                        Matemáticas
+                    </option>
+
+                    <option value="Lenguaje">
+                        Lenguaje
+                    </option>
+
+                    <option value="Ciencias">
+                        Ciencias
+                    </option>
+
+                    <option value="Inglés">
+                        Inglés
+                    </option>
+
+                    <option value="Historia">
+                        Historia
+                    </option>
+
+                    <option value="Computación">
+                        Computación
+                    </option>
+
+                </select>
+
+                <label for="nota">Nota:</label>
+
+                <input
+                    type="number"
+                    id="nota"
+                    min="0"
+                    max="20"
+                    step="0.1"
+                >
+
+                <button
+                    class="guardar"
+                    onclick="guardar()"
+                >
+                    Guardar
+                </button>
+
+                <button
+                    class="mostrar"
+                    onclick="mostrar()"
+                >
+                    Mostrar
+                </button>
+
+                <button
+                    class="eliminar"
+                    onclick="eliminar()"
+                >
+                    Eliminar
+                </button>
+
+                <button
+                    class="limpiar"
+                    onclick="limpiar()"
+                >
+                    Limpiar
+                </button>
+
+            </div>
+
+
+            <!-- LISTA DE ESTUDIANTES -->
+
+            <div class="marco">
+
+                <h2>Lista de estudiantes</h2>
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Curso</th>
+                                <th>Nota</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabla">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUSCAR -->
+
+        <div class="marco buscar-contenedor">
+
+            <h2>Buscar estudiante</h2>
+
+            <div class="buscar-fila">
+
+                <input
+                    type="text"
+                    id="buscar"
+                    placeholder="Escribe el nombre del estudiante"
+                >
+
+                <button
+                    class="buscar"
+                    onclick="buscar()"
+                >
+                    Buscar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // Lista de estudiantes
+
+        let estudiantes = [];
+
+        // Estudiante seleccionado
+
+        let seleccionado = null;
+
+
+        // =========================
+        // MENSAJE
+        // =========================
+
+        function mensaje(texto) {
+
+            const caja = document.getElementById("mensaje");
+
+            caja.textContent = texto;
+
+            caja.style.display = "block";
+
+            setTimeout(function() {
+
+                caja.style.display = "none";
+
+            }, 2500);
+
+        }
+
+
+        // =========================
+        // GUARDAR
+        // =========================
+
+        function guardar() {
+
+            const nombre =
+                document.getElementById("nombre").value.trim();
+
+            const edad =
+                document.getElementById("edad").value.trim();
+
+            const curso =
+                document.getElementById("curso").value;
+
+            const nota =
+                document.getElementById("nota").value.trim();
+
+
+            if (
+                nombre === "" ||
+                edad === "" ||
+                curso === "" ||
+                nota === ""
+            ) {
+
+                mensaje("Completa todos los campos");
+
+                return;
+            }
+
+
+            const estudiante = {
+
+                nombre: nombre,
+
+                edad: edad,
+
+                curso: curso,
+
+                nota: nota
+
+            };
+
+
+            estudiantes.push(estudiante);
+
+
+            mostrar();
+
+
+            mensaje(
+                "Estudiante guardado correctamente"
+            );
+
+        }
+
+
+        // =========================
+        // MOSTRAR
+        // =========================
+
+        function mostrar(lista = estudiantes) {
+
+            const tabla =
+                document.getElementById("tabla");
+
+
+            tabla.innerHTML = "";
+
+
+            lista.forEach(function(estudiante) {
+
+                const indice =
+                    estudiantes.indexOf(estudiante);
+
+
+                const fila =
+                    document.createElement("tr");
+
+
+                fila.innerHTML = `
+
+                    <td>
+                        ${indice + 1}
+                    </td>
+
+                    <td>
+                        ${estudiante.nombre}
+                    </td>
+
+                    <td>
+                        ${estudiante.edad}
+                    </td>
+
+                    <td>
+                        ${estudiante.curso}
+                    </td>
+
+                    <td>
+                        ${estudiante.nota}
+                    </td>
+
+                `;
+
+
+                fila.onclick = function() {
+
+                    seleccionar(
+                        fila,
+                        indice
+                    );
+
+                };
+
+
+                tabla.appendChild(fila);
+
+            });
+
+        }
+
+
+        // =========================
+        // SELECCIONAR
+        // =========================
+
+        function seleccionar(fila, indice) {
+
+            const filas =
+                document.querySelectorAll(
+                    "#tabla tr"
+                );
+
+
+            filas.forEach(function(f) {
+
+                f.classList.remove(
+                    "seleccionado"
+                );
+
+            });
+
+
+            fila.classList.add(
+                "seleccionado"
+            );
+
+
+            seleccionado = indice;
+
+        }
+
+
+        // =========================
+        // ELIMINAR
+        // =========================
+
+        function eliminar() {
+
+            if (seleccionado === null) {
+
+                mensaje(
+                    "Selecciona un estudiante"
+                );
+
+                return;
+            }
+
+
+            estudiantes.splice(
+                seleccionado,
+                1
+            );
+
+
+            seleccionado = null;
+
+
+            mostrar();
+
+
+            mensaje(
+                "Estudiante eliminado"
+            );
+
+        }
+
+
+        // =========================
+        // LIMPIAR
+        // =========================
+
+        function limpiar() {
+
+            document.getElementById(
+                "nombre"
+            ).value = "";
+
+
+            document.getElementById(
+                "edad"
+            ).value = "";
+
+
+            document.getElementById(
+                "curso"
+            ).value = "";
+
+
+            document.getElementById(
+                "nota"
+            ).value = "";
+
+        }
+
+
+        // =========================
+        // BUSCAR
+        // =========================
+
+        function buscar() {
+
+            const texto =
+                document.getElementById(
+                    "buscar"
+                ).value.toLowerCase();
+
+
+            const resultados =
+                estudiantes.filter(
+                    function(estudiante) {
+
+                        return estudiante.nombre
+                            .toLowerCase()
+                            .includes(texto);
+
+                    }
+                );
+
+
+            mostrar(resultados);
+
+        }
+
+
+        // =========================
+        // ENTER PARA BUSCAR
+        // =========================
+
+        document.getElementById(
+            "buscar"
+        ).addEventListener(
+            "keypress",
+            function(event) {
+
+                if (event.key === "Enter") {
+
+                    buscar();
+
+                }
+
+            }
+        );
+
+
+        // =========================
+        // MOSTRAR AL INICIAR
+        // =========================
+
+        mostrar();
+
+    </script>
+
+</body>
+</html>
